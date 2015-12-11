@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace nqueenshazi
 {
     interface ISelector<C,G>
-        where C : class, IChromosome<G>, new()
-        where G : class
+        where C : class, IChromosome<G>
     {
         List<C> GetNewPopulation(List<C> pool, Func<C, double> fitness);
     }

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 namespace nqueenshazi
 {
     class MatchSelector<C, G> : ISelector<C, G>
+        where C : class, IChromosome<G>
     {
-
+        private Random r = new Random();
         public int MatchCount { get; set; }
 
         public MatchSelector(int matchCount) {
@@ -21,22 +22,26 @@ namespace nqueenshazi
             {
                 sum += fitness(c);
             }
-            Random r = new Random();
+            
             List<C> newpool = new List<C>();
 
-            for (int i = 0; i < pool.Count / 2; i++)
+            C cBest = default(C);
+            for (int i = 0; i < pool.Count; i++)
             {
-                C cBest = default(C);
+                double bestFit = 0;
                 for (int j = 0; j < MatchCount; j++)
                 {
-                    double currFit = 0;
+                    double currSumFit = 0;
                     double rnd = r.NextDouble() * sum;
                     foreach (var c in pool)
                     {
-                        currFit += fitness(c);
-                        if (currFit > rnd && (j == 0 || fitness(cBest) < fitness(c)))
+                        double currFit = fitness(c);
+                        currSumFit += currFit;
+                        if (currSumFit > rnd && (j == 0 || bestFit < currFit))
                         {
                             cBest = c;
+                            bestFit = currFit;
+                            break;
                         }
                     }
                 }

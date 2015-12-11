@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace nqueenshazi
 {
-    interface IChromosome<out T>
+    interface IChromosome<T>
     {
-        T this[int i] { 
-            get;
-            set;
-        }
-
+        T this[int i] { get; set; }
         IChromosome<T> Mutate(double p);
-
+        int GeneCount { get; }
     }
 }
