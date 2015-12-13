@@ -11,29 +11,35 @@ namespace nqueenshazi
     {
         private Random r = new Random();
 
-        public List<C> GetNewPopulation(List<C> pool, Func<C, double> fitness) {
+        public C GetSelected(List<C> pool, List<double> fitValues, C excluded = null) {
             double sum = 0.0;
-            foreach (var c in pool)
+
+            if (pool.Count != fitValues.Count)
             {
-                sum += fitness(c);
+                throw new ArgumentException("Pool and fitness list counts must match.");
             }
-            List<C> newpool = new List<C>();
 
             for (int i = 0; i < pool.Count; i++)
             {
+                sum += fitValues[i];
+            }
+
+            C c = null;
+            while (c == null)
+            {
                 double currSumFit = 0;
                 double rnd = r.NextDouble() * sum;
-                foreach (var c in pool)
+                for (int i = 0; i < pool.Count; i++)
                 {
-                    currSumFit += fitness(c);
-                    if (currSumFit > rnd)
+                    currSumFit += fitValues[i];
+                    if (currSumFit > rnd && pool[i] != excluded)
                     {
-                        newpool.Add(c);
+                        c = pool[i];
                         break;
                     }
                 }
             }
-            return newpool;
+            return c;
         }
     }
 }

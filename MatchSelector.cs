@@ -16,38 +16,40 @@ namespace nqueenshazi
             MatchCount = matchCount;
         }
 
-        public List<C> GetNewPopulation(List<C> pool, Func<C, double> fitness) {
+        public C GetSelected(List<C> pool, List<double> fitValues, C excluded = null) {
             double sum = 0.0;
-            foreach (var c in pool)
-            {
-                sum += fitness(c);
-            }
-            
-            List<C> newpool = new List<C>();
 
-            C cBest = default(C);
+            if (pool.Count != fitValues.Count)
+            {
+                throw new ArgumentException("Pool and fitness list counts must match.");
+            }
+
             for (int i = 0; i < pool.Count; i++)
             {
-                double bestFit = 0;
-                for (int j = 0; j < MatchCount; j++)
+                sum += fitValues[i];
+            }
+
+            C cBest = null;
+            double bestFit = 0;
+            while (cBest == null)
+            {
+                for (int k = 0; k < MatchCount; k++)
                 {
                     double currSumFit = 0;
                     double rnd = r.NextDouble() * sum;
-                    foreach (var c in pool)
+                    for (int i = 0; i < pool.Count; i++)
                     {
-                        double currFit = fitness(c);
-                        currSumFit += currFit;
-                        if (currSumFit > rnd && (j == 0 || bestFit < currFit))
+                        currSumFit += fitValues[i];
+                        if (currSumFit > rnd && bestFit < fitValues[i] && pool[i] != excluded)
                         {
-                            cBest = c;
-                            bestFit = currFit;
+                            cBest = pool[i];
+                            bestFit = fitValues[i];
                             break;
                         }
                     }
                 }
-                newpool.Add(cBest);
             }
-            return newpool;
+            return cBest;
         }
     }
 }

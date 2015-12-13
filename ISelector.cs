@@ -9,6 +9,6 @@ namespace nqueenshazi
     interface ISelector<C,G>
         where C : class, IChromosome<G>
     {
-        List<C> GetNewPopulation(List<C> pool, Func<C, double> fitness);
+        C GetSelected(List<C> pool, List<double> fitValues, C excluded = null);
     }
 }
